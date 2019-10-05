@@ -1,16 +1,13 @@
 <template>
   <div id="app">
-    <div class="flex-main">
-      <Navbar v-if="notAuth"></Navbar>
-      <transition name="fade" mode="out-in">
-        <router-view></router-view>
-      </transition>
-      <!-- <List></List> -->
-      <!-- <Article></Article> -->
-      <!-- <Test></Test> -->
-      <!-- <SignIn></SignIn> -->
-      <vue-progress-bar></vue-progress-bar>
+    <Navbar v-if="notAuth"></Navbar>
+    <div class="flex-content">
+      <TopNav v-if="notAuth" :hideBtn="notArticle"></TopNav>
+      <!-- <transition name="fade" mode="out-in"> -->
+      <router-view></router-view>
+      <!-- </transition> -->
     </div>
+    <vue-progress-bar></vue-progress-bar>
   </div>
 </template>
 
@@ -22,7 +19,9 @@ import Test from "./components/Stage/Test";
 import SignIn from "./components/Auth/SignIn";
 import SignOut from "./components/Auth/SignOut";
 import Home from "./components/Home";
+import Portfolio from "./components/Portfolio";
 import Player from "./components/Player";
+import TopNav from "./components/TopNav";
 
 export default {
   name: "app",
@@ -66,11 +65,19 @@ export default {
     SignIn,
     SignOut,
     Home,
-    Player
+    Player,
+    Portfolio,
+    TopNav
   },
   computed: {
     notAuth() {
-      return this.$route.path !== "/sign-in";
+      if (this.$route.path !== "/sign-in" && this.$route.path !== "/sign-out") {
+        return true;
+      }
+      return false;
+    },
+    notArticle() {
+      return this.$route.path == "/article";
     }
   }
 };
@@ -120,6 +127,13 @@ p {
   justify-items: center;
 }
 
+.flex-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .btn {
   border-radius: 4px;
   padding: 14px 18px;
@@ -137,6 +151,11 @@ p {
 
 .btn-primary {
   background: #109cf1;
+  box-shadow: 0px 4px 10px rgba(16, 156, 241, 0.24);
+}
+
+.btn-success {
+  background: #2ed47a;
   box-shadow: 0px 4px 10px rgba(16, 156, 241, 0.24);
 }
 
@@ -223,5 +242,11 @@ a:hover {
 .fade-enter,
 .fade-leave-active {
   opacity: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .content {
+    /* padding: 0; */
+  }
 }
 </style>

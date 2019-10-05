@@ -1,7 +1,6 @@
 <template>
   <div class="container main">
     <div>
-      <div class="top-nav"></div>
       <div>
         <div class="content">
           <h1 class="page-headline">
@@ -47,13 +46,6 @@
   width: 100%;
 }
 
-.top-nav {
-  width: 100%;
-  height: 60px;
-  background-color: #fff;
-  border-bottom: 1px solid #ebeff2;
-}
-
 .content {
   padding: 36px;
   text-align: left;
@@ -71,7 +63,7 @@
 .list {
   margin-bottom: 36px;
   width: 60%;
-  min-width: 500px;
+  min-width: 600px;
 }
 
 .list-title {
@@ -114,6 +106,13 @@
 
 .processing {
   border: 2px solid #2ed47a;
+}
+
+@media screen and (max-width: 768px) {
+  .list {
+    width: 100%;
+    min-width: 100%;
+  }
 }
 </style>
 

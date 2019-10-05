@@ -1,16 +1,7 @@
 <template>
   <div class="container main">
-    <div class="top-nav">
-      <div class="go-back">
-        <img src="../../assets/goback.png" alt />
-        Назад
-      </div>
-      <div class="control-btns">
-        <img src alt />
-        <img src alt />
-      </div>
-    </div>
     <div class="player">
+      <!-- :audio="currentAudio" -->
       <Player></Player>
     </div>
     <div class="content flex article-content">
@@ -46,15 +37,26 @@
           <br />Pariatur id dolor sunt exercitation nulla ipsum est adipisicing occaecat sunt sint. Consectetur cillum incididunt sunt laboris officia in eiusmod eu. Consequat consequat laboris voluptate mollit sit consectetur elit aliquip. Pariatur esse dolor fugiat adipisicing exercitation excepteur in cupidatat exercitation tempor elit.
           <br />Enim irure consectetur tempor do mollit culpa mollit fugiat eu anim dolore qui aliquip. Magna dolore qui id ut aliqua in pariatur nisi et anim ut pariatur minim proident. Ut officia ea sunt magna in pariatur officia cupidatat nisi anim nulla non reprehenderit fugiat. Laborum cillum in amet ipsum ullamco aliquip proident quis qui tempor excepteur do proident. In non Lorem elit ex minim nulla est deserunt sunt. Veniam proident magna esse amet deserunt incididunt officia veniam duis in. In ullamco elit pariatur officia ipsum tempor officia esse culpa id dolore id nostrud.
         </p>
-        <div class="audio-file">
-          <div class="audio-file-btn">
-            <img src="../../assets/pause.png" alt />
+        <div
+          class="audio-file"
+          v-for="(audio, index) in files"
+          :key="index"
+          @click="changeSong(index), isPlaylistActive = !isPlaylistActive"
+        >
+          <div class="audio-file-btn" @click="playAudio()">
+            <a @click="playAudio(index)">
+              <!-- <transition> -->
+              <span class="audio-icon">{{currentlyStopped ? '⏹' : (currentlyPlaying ? '❚❚' : '▶')}}</span>
+              <!-- </transition> -->
+            </a>
+
+            <!-- <img src="../../assets/headphone.png" @is-playing="setPlaying" />
+            <img src="../../assets/pause.png" alt />-->
           </div>
           <div class="audio-file-process">
-            <p class="audio-file-title">Содержание указа президента РУз от 18 Апреля...</p>
+            <p class="audio-file-title">{{audio.title}}</p>
             <div class="audio-process-bar">
-              <div class="audio-process-bar-active"></div>
-              <span class="audio-time">01:09</span>
+              <div class="audio-process-bar-active" :style="{width: currentProgressBar + '%'}"></div>
             </div>
           </div>
         </div>
@@ -95,6 +97,184 @@
   </div>
 </template>
 
+<script>
+import Player from "../Player";
+import { files } from "../modules/level/api";
+
+export default {
+  data() {
+    return {
+      files: files,
+      musicPlaylist: [
+        {
+          title: "Service Bell",
+          artist: "Daniel Simion",
+          url: "https://soundbible.com/mp3/service-bell_daniel_simion.mp3",
+          image: "https://source.unsplash.com/crs2vlkSe98/400x400"
+        },
+        {
+          title: "Meadowlark",
+          artist: "Daniel Simion",
+          url: "https://soundbible.com/mp3/meadowlark_daniel-simion.mp3",
+          image: "https://source.unsplash.com/35bE_njbG9E/400x400"
+        },
+        {
+          title: "Hyena Laughing",
+          artist: "Daniel Simion",
+          url: "https://soundbible.com/mp3/hyena-laugh_daniel-simion.mp3",
+          image: "https://source.unsplash.com/Esax9RaEl2I/400x400"
+        },
+        {
+          title: "Creepy Background",
+          artist: "Daniel Simion",
+          url: "http://soundbible.com/mp3/creepy-background-daniel_simon.mp3",
+          image: "https://source.unsplash.com/j0g8taxHZa0/400x400"
+        }
+      ],
+      audio: "",
+      currentlyPlaying: false,
+      currentlyStopped: false,
+      currentTime: 0,
+      checkingCurrentPositionInTrack: "",
+      trackDuration: 0,
+      currentProgressBar: 0,
+      isPlaylistActive: false,
+      currentSong: 0,
+      debug: false,
+      currentAudio: String,
+      playing: true,
+      audioFile: ""
+    };
+  },
+  components: {
+    Player
+  },
+
+  computed: {
+    setPlaying() {
+      this.playing = false;
+    }
+  },
+
+  mounted() {
+    this.changeSong();
+    this.audio.loop = false;
+  },
+
+  methods: {
+    playAudio: function(index) {
+      if (
+        this.currentlyStopped == true &&
+        this.currentSong + 1 == this.musicPlaylist.length
+      ) {
+        this.currentSong = 0;
+        this.changeSong();
+      }
+      if (!this.currentlyPlaying) {
+        this.getCurrentTimeEverySecond(true);
+        this.currentlyPlaying = true;
+        this.audio.play();
+      } else {
+        this.stopAudio();
+      }
+      this.currentlyStopped = false;
+    },
+
+    stopAudio: function() {
+      this.audio.pause();
+      this.currentlyPlaying = false;
+      this.pausedMusic();
+    },
+
+    onImageLoaded: function() {
+      this.imgLoaded = true;
+    },
+
+    getCurrentTimeEverySecond: function(startStop) {
+      var localThis = this;
+      this.checkingCurrentPositionInTrack = setTimeout(
+        function() {
+          localThis.currentTime = localThis.audio.currentTime;
+          localThis.currentProgressBar =
+            (localThis.audio.currentTime / localThis.trackDuration) * 100;
+          localThis.getCurrentTimeEverySecond(true);
+        }.bind(this),
+        1000
+      );
+    },
+    pausedMusic: function() {
+      clearTimeout(this.checkingCurrentPositionInTrack);
+    },
+    toggleDebug: function() {
+      this.debug = !this.debug;
+      document.body.classList.toggle("debug");
+    },
+
+    handleEnded: function() {
+      if (this.currentSong + 1 == this.musicPlaylist.length) {
+        this.stopAudio();
+        this.currentlyPlaying = false;
+        this.currentlyStopped = true;
+      } else {
+        this.currentlyPlaying = false;
+        this.currentSong++;
+        this.changeSong();
+        this.playAudio();
+      }
+    },
+
+    changeSong: function(index) {
+      var wasPlaying = this.currentlyPlaying;
+      this.imageLoaded = false;
+      if (index !== undefined) {
+        this.stopAudio();
+        this.currentSong = index;
+      }
+      this.audioFile = this.musicPlaylist[this.currentSong].url;
+      this.audio = new Audio(this.audioFile);
+      var localThis = this;
+      this.audio.addEventListener("loadedmetadata", function() {
+        localThis.trackDuration = Math.round(this.duration);
+      });
+      this.audio.addEventListener("ended", this.handleEnded);
+      if (wasPlaying) {
+        this.playAudio();
+      }
+    },
+
+    isCurrentSong: function(index) {
+      if (this.currentSong == index) {
+        return true;
+      }
+      return false;
+    },
+
+    getCurrentSong: function(currentSong) {
+      return this.musicPlaylist[currentSong].url;
+    }
+  },
+
+  filters: {
+    fancyTimeFormat: function(s) {
+      return (s - (s %= 60)) / 60 + (9 < s ? ":" : ":0") + s;
+    }
+  },
+
+  watch: {
+    currentTime: function() {
+      this.currentTime = Math.round(this.currentTime);
+    }
+  },
+
+  beforeDestroy: function() {
+    this.audio.removeEventListener("ended", this.handleEnded);
+    this.audio.removeEventListener("loadedmetadata", this.handleEnded);
+
+    clearTimeout(this.checkingCurrentPositionInTrack);
+  }
+};
+</script>
+
 <style>
 /***************** Audio start*/
 .player {
@@ -104,6 +284,7 @@
 .audio-file {
   display: flex;
   margin: 24px 0;
+  align-items: center;
 }
 
 .audio-file-process {
@@ -232,14 +413,42 @@ article {
   line-height: 18px;
   letter-spacing: 0.01em;
 }
+.go-back {
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 0.01em;
+  color: #109cf1;
+  display: flex;
+  align-items: center;
+}
+
+.go-back p {
+  margin-left: 14px;
+}
+
+.go-back img {
+  width: 18px;
+}
+
+.audio-icon {
+  color: #fff;
+  position: absolute;
+  left: 12px;
+  top: 7px;
+}
+
+@media screen and (max-width: 768px) {
+  .player {
+    padding-left: 0;
+  }
+
+  .article-content .sidebar {
+    display: none;
+  }
+
+  .article-content article {
+    width: 100%;
+  }
+}
 </style>
 
-<script>
-import Player from "../Player";
-
-export default {
-  components: {
-    Player
-  }
-};
-</script>

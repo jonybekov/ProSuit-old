@@ -20,8 +20,9 @@
 
               <label value="Эл. почта" for="password">Пароль</label>
               <input type="password" id="password" class="input" placeholder="******" />
-
-              <button class="btn btn-primary btn-dark ps-64">Войти</button>
+              <router-link :to="'/'">
+                <button class="btn btn-primary btn-dark ps-64">Войти</button>
+              </router-link>
               <a href="#" class="ml-16">Забыли пароль?</a>
             </form>
             <div class="auth-info">

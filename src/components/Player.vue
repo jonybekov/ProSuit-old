@@ -2,10 +2,10 @@
   <div class="container">
     <div class="player-inner">
       <vue-plyr ref="plyr">
-        <audio>
-          <source src="../assets/01_Beautiful_People_(Feat_Khalid).mp3" type="audio/mp3" />
+        <audio crossorigin playsinline>
+          <source :src="gotAudio" type="audio/mp3" />
 
-          <source src="audio.ogg" type="audio/ogg" />
+          <!-- <source src="audio.ogg" type="audio/ogg" /> -->
         </audio>
       </vue-plyr>
     </div>
@@ -43,14 +43,38 @@
 import Plyr from "plyr";
 
 export default {
-  name: "Player",
-
-  mounted() {
-    console.log(this.player);
+  data() {
+    return {
+      playing: false
+    };
   },
+  props: {
+    audio: String
+  },
+
   computed: {
     player() {
       return this.$refs.plyr.player;
+    },
+
+    gotAudio() {
+      // this.player.play();
+      this.playing = true;
+      return this.audio;
+    }
+  },
+
+  componentDidMount() {},
+  mounted() {
+    this.player.autoplay = true;
+
+    this.$emit("is-playing", this.playing);
+    console.log("Player", this.player);
+  },
+
+  methods: {
+    isPlaying() {
+      this.$emit("is-playing", this.playing);
     }
   }
 };

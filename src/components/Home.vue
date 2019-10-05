@@ -1,7 +1,6 @@
 <template>
   <div class="container main">
-    <div class="top-nav"></div>
-    <div class="content flex">
+    <div class="content flex home-blocks">
       <div class="home-block">
         <h1 class="page-headline">Статус:</h1>
         <div class="levels-main main-bg">
@@ -42,7 +41,9 @@
             </div>
           </div>
         </div>
-        <button class="btn btn-primary btn-dark">Продолжить обучение</button>
+        <router-link :to="'/materials'">
+          <button class="btn btn-primary btn-dark">Продолжить обучение</button>
+        </router-link>
       </div>
       <div class="home-block">
         <h1 class="page-headline">Результаты тестов:</h1>
@@ -152,6 +153,8 @@
   list-style: none;
   display: flex;
   justify-content: space-between;
+  position: relative;
+  overflow: hidden;
 }
 
 .level-icon {
@@ -216,6 +219,44 @@
 .current-lvl .level-icon img {
   top: 13px;
   left: 13.5px;
+}
+
+@media screen and (max-width: 320px) {
+}
+
+@media screen and (max-width: 480px) {
+}
+
+@media screen and (max-width: 768px) {
+}
+
+@media screen and (max-width: 1024px) {
+  .home-blocks {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .home-block {
+    width: 100% !important;
+  }
+
+  .home-block:not(:last-child) {
+    margin-bottom: 24px;
+  }
+
+  .level-icon:after {
+    width: 150px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .home-block {
+    width: 45%;
+  }
+
+  .home-block:last-child {
+    margin-right: 0;
+  }
 }
 </style>
 <script>

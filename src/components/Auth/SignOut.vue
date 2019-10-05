@@ -27,8 +27,9 @@
               />
               <label for="adress">Адресс:</label>
               <input type="text" id="adress" class="input" placeholder="Напишите организацию" />
-
-              <button class="btn btn-primary btn-dark">Зарегистрироваться</button>
+              <router-link :to="'/'">
+                <button class="btn btn-primary btn-dark">Зарегистрироваться</button>
+              </router-link>
             </form>
           </div>
         </div>

@@ -2,7 +2,9 @@
   <div class="container">
     <nav>
       <div class="logo nav-item">
-        <img src="../assets/ps-logo.png" alt />
+        <router-link :to="'/'">
+          <img src="../assets/ps-logo.png" alt />
+        </router-link>
       </div>
       <div class="user nav-item">
         <div class="user-info">
@@ -24,7 +26,9 @@
             <span class="progress-bar-active"></span>
           </div>
         </div>
-        <button class="btn btn-primary btn-dark">Продолжить обучение</button>
+        <router-link :to="'/materials'">
+          <button class="btn btn-primary btn-dark">Продолжить обучение</button>
+        </router-link>
       </div>
       <div class="navigation nav-item">
         <ul>
@@ -41,8 +45,19 @@
             <router-link :to="'/test'">Тесты</router-link>
           </li>
           <li>
+            <img src="../assets/nav2.png" alt />
+            <router-link :to="'/portfolio'">Портфолио</router-link>
+          </li>
+          <li>
             <!-- <router-link>Портфолио</router-link> -->
           </li>
+        </ul>
+      </div>
+      <div class="bottom-links">
+        <ul>
+          <li>Настройки</li>
+          <li>Справочный центр</li>
+          <li>Политика конфиденциальности</li>
         </ul>
       </div>
     </nav>
@@ -196,7 +211,48 @@ nav {
   color: #aeaeae;
   font-size: 12px;
 }
+
+.bottom-links {
+  position: absolute;
+  bottom: 34px;
+  left: 0;
+}
+
+.bottom-links ul {
+  list-style: none;
+  text-align: left;
+  padding-left: 24px;
+}
+
+.bottom-links li {
+  margin-bottom: 16px;
+  font-size: 11px;
+  line-height: 13px;
+  letter-spacing: 0.01em;
+  color: #6accce;
+  cursor: pointer;
+}
+
+.bottom-links li:hover {
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 768px) {
+  nav .logo {
+    display: none;
+  }
+
+  nav {
+    display: none;
+  }
+
+  .content {
+    margin-left: 0 !important;
+  }
+}
 </style>
+
+
 
 <script>
 export default {
