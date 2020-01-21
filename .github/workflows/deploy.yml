@@ -1,23 +1,26 @@
-name: Deploy to GitHub Pages
+  
+name: Deploy to GH Pages on push to develop
+
 on:
   push:
-    branches:
-      - master
+    branches: 
+    - master
+
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  push_gh_pages:
+    name: pushing to github pages
+    runs-on: [ubuntu-latest]
     steps:
-    - name: Checkout
-      uses: actions/checkout@v1
-
-    - name: Build
-      run: |
-        npm install
-        npm run build
-
-    - name: Deploy
-      uses: JamesIves/github-pages-deploy-action@releases/v3
-      with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BRANCH: gh-pages
-        FOLDER: dist
+      - uses: actions/checkout@v1
+        with:
+          ref: master
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - run: npm install
+      - run: npm run build
+      - name: GitHub Pages Deploy
+        uses: maxheld83/ghpages@v0.2.1
+        env:
+          BUILD_DIR: dist/
+          GH_PAT: ${{ secrets.GH_PAT }}
